@@ -1,6 +1,22 @@
-class BaseSensor:
+#     configure(pass in generic object): one time
+#     read(no parameters passed?): every time we want to read sensor data
+#     parse(): convert raw data to something we can send to server
 
+from abc import ABC, abstractmethod
 
-    configure(pass in generic object, data and events): one time
-    read(): every time we want to read sensor data
-    parse(): convert raw data to something we can send to server -> output = dictionary
+class BaseSensor(ABC):
+
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod
+    def configure(self, sensorConfiguration):
+        pass
+
+    @abstractmethod
+    def read(self):
+        pass
+
+    @abstractmethod
+    def clean(self):
+        pass
