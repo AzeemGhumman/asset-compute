@@ -1,33 +1,39 @@
-- device-name: device-40
-- hardware: PI_3
-- queue-size: 100
-- sensors:
-    - name:	Internal-Temperature
-    	type: DHT_11
-      connections:
-        - link: [POWER, 5V]
-        - link: [GND, GND_1]
-        - link: [SIGNAL, GPIO23]
-      data:
-      	- temperature
-        - humidity
-      signal:
-      	- HUMIDITY_DROPPED_BELOW_50
-        - TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE
-      period:
-      	- value: 10
-        	unit: seconds
-    - name:	External-Temperature
-    	type: DHT_22
-      connections:
-        - link: [POWER, 5V]
-        - link: [GND, GND_2]
-        - link: [SIGNAL, GPIO25]
-      data:
-      	- temperature
-        - humidity
-      signal:
-      	- HUMIDITY_DROPPED_BELOW_50
-      period:
-      	- value: 20
-        	unit: seconds
+---
+device-name: device-40
+hardware-type: Pi3b
+queue-size: 100
+sensors:
+- name: Internal-Temperature
+  type: DHT_11
+  connections:
+  - compute: DC_POWER_5V_02
+    sense: POWER
+  - compute: GROUND_39
+    sense: GROUND
+  - compute: GPIO_23
+    sense: SIGNAL
+  data:
+  - temperature
+  events:
+  - HUMIDITY_DROPPED_BELOW_50
+  - TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE
+  period:
+  - unit: seconds
+    value: 10
+- name: External-Temperature
+  type: DHT_11
+  connections:
+  - compute: DC_POWER_5V_04
+    sense: POWER
+  - compute: GROUND_25
+    sense: GROUND
+  - compute: GPIO_14
+    sense: SIGNAL
+  data:
+  - temperature
+  - humidity
+  events:
+  - HUMIDITY_DROPPED_BELOW_50
+  period:
+  - unit: seconds
+    value: 20

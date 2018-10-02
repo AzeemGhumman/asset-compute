@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import Adafruit_DHT
+from BaseSensor import BaseSensor
+
+# import Adafruit_DHT
 
 '''
 # Note that sometimes you won't get a reading and
@@ -18,17 +20,32 @@ class DHT_11(BaseSensor):
     def __init__(self):
         super().__init__()
 
-        self.sensor = Adafruit_DHT.DHT11
-        self.pinGround = None
-        self.pinPower = None
-        self.pinData = None
-        self.isReportTemperature = False
-        self.isReportHumidity = False
+        # self.sensor = Adafruit_DHT.DHT11
+        self.gpioPinNumber = None
         self.lastTemperature = None
         self.lastHumidity = None
 
-    def configure(self, sensorConfiguration):
-        print ("configuring DHT_11 sensor")
+
+    def validPinNames(self):
+        return ["POWER", "GROUND", "SIGNAL"]
+
+    def validDataElementNames(self):
+        return ["temperature", "humidity"]
+
+    def validEventElementNames(self):
+        return ["TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE", "HUMIDITY_DROPPED_BELOW_50"]
+
+    def configure(self):
+
+        print (self.name)
+
+        for connection in self.connections:
+
+            # TODO: I don't like strings in sensor classes, please move somewhere
+            sense = connection["sense"]
+            compute = connection["compute"]
+
+            print (sense)
 
         # TODO: make assertions about where all the pins are connected.
         # TODO: for example, for ground, we can check that it is connected to
@@ -44,10 +61,10 @@ class DHT_11(BaseSensor):
         # TODO: No need to return anything. just update member variables
         # TODO: Maybe return a success | failure flag, but won't make sense in multithreaded application
 
-        self.humidity, self.temperature = Adafruit_DHT.read(self.sensor, self.pinData)
+        # self.humidity, self.temperature = Adafruit_DHT.read(self.sensor, self.pinData)
 
 
-    def clean(self):
+    def write(self):
         print ("select the requested elements, convert to correct units and create a dict object that can be added to the final json. please think of a better name")
         # TODO: based on the flags that are set, create a dict containing
         # data in correct format
