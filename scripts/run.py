@@ -14,6 +14,10 @@ import BaseCompute
 sys.path.append('../sensors/')
 import BaseSensor
 
+# Load common
+sys.path.append('../scripts/helper/')
+from common import SensorPin, ComputePin, PinConnection
+from common import fail
 
 '''
 Read yaml file
@@ -35,10 +39,6 @@ For each unit of time passed:
             Drop first messages
         Add json pack to queue
 '''
-
-def fail(message):
-    print (message)
-    exit()
 
 def loadConfiguration(configFilePath, params):
     print ("Loading config file: " + configFilePath)
@@ -83,7 +83,7 @@ paramDeviceName, paramHardwareType, paramQueueSize, paramSensors = \
 computeClass = importClassDynamically(paramHardwareType)
 
 # Load the pin map for the selected compute
-computePinMap = computeClass.getPinMap()
+# computeBoardPins = computeClass.getComputePins()
 
 
 '''
@@ -107,38 +107,48 @@ strSensorDataElements = "data"
 strSensorEventElements = "events"
 strSensorConnections = "connections"
 strSensorConnectionCompute = "compute"
-strSensorConnectionSense = "sense"
+strSensorConnectionSensor = "sensor"
 
 # Store sensor objects in a list
 sensors = []
 
 for sensor in paramSensors:
-    sensorClass = importClassDynamically(sensor[strSensorType])
 
     # Update conncetions: get pinMap from pin name for each compute pin
     connections = []
     for connection in sensor[strSensorConnections]:
-        computePin = connection[strSensorConnectionCompute]
-        sensePin = connection[strSensorConnectionSense]
-        if computePin not in computePinMap:
+        sensorPin = SensorPin(name = connection[strSensorConnectionSensor])
+        computePinName = connection[strSensorConnectionCompute]
+        # computePin = getComputePin(computeClass, computePinName)
+        computePin = computeClass.getPin(computePinName)
+        if computePin is None:
             fail ("Pin: " + str(computePin) + " not found in selected compute")
-        connections.append({strSensorConnectionCompute : computePinMap[computePin], \
-                            strSensorConnectionSense : sensePin})
+        connections.append(PinConnection(sensorPin, computePin))
+        # connections.append({strSensorConnectionCompute : computePinMap[computePin], \
+        #                     strSensorConnectionSensor : sensorPin})
 
-    sensorClass.setSensorConfigurations(name = sensor[strSensorName], \
+    sensorObject = importClassDynamically(sensor[strSensorType])
+
+    sensorObject.setSensorConfigurations(name = sensor[strSensorName], \
                                         dataElements = sensor[strSensorDataElements], \
                                         eventElements = sensor[strSensorEventElements], \
                                         connections = connections)
-    # TODO: here
 
-    sensorClass.configure()
+    sensorObject.configure()
 
-    # print (sensorClass.name)
+    sensors.append(sensorObject)
 
     # TODO: remove break
     break
 
-
+print ("all sensors have been configured")
+# All sensors have been configured
+while True:
+    output = {}
+    for sensor in sensors:
+        sensor.read()
+        output[sensor.name] = sensor.write()
+    print (output)
 
 
 

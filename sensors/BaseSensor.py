@@ -25,6 +25,7 @@ in write()
 
 '''
 
+import pdb
 
 class BaseSensor(ABC):
 
@@ -41,6 +42,44 @@ class BaseSensor(ABC):
         self.eventElements = eventElements
         self.connections = connections
 
+        # TODO:
+        '''
+        get all pins, data and event from class
+        checks:
+        - all pins must be present in connections
+        - all data in dataElements must be present in class
+        - all evenets in ....
+
+        set all pinNumbers in class to what is coming from connections
+        # let the child class ask for compatibility tests based on tags
+
+        # when write is called from main loop
+        # we internally call the clean method of the child class?
+        then, based on the dataelements and eventelements requested,
+        we generate the final dictionary object that is returned to
+        the runner.
+
+        # TODO: separate method for each event? maybe update all
+        # events for now in the read() and clean() and put only
+        # the requested objects in the final dict
+
+        keep all events in one function for now
+
+        ! instead of write or clean
+        add a pre-write and post-write hook
+        the runner should call both hooks
+
+        ! Aha
+        add PARAM__EVENT__paramName
+        change the manifest to let event take parameters
+        let data take params and let the sensor take params
+        PARAM__DATA__paramName
+        PARAM_SENSOR_paramName
+
+
+        '''
+        pdb.set_trace()
+
     @abstractmethod
     def configure(self):
         pass
@@ -50,5 +89,5 @@ class BaseSensor(ABC):
         pass
 
     @abstractmethod
-    def write(self):
+    def clean(self):
         pass

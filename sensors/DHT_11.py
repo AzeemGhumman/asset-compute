@@ -3,6 +3,8 @@
 from BaseSensor import BaseSensor
 
 # import Adafruit_DHT
+import pdb
+
 
 '''
 # Note that sometimes you won't get a reading and
@@ -15,37 +17,48 @@ else:
     print('Failed to get reading. Try again!')
 '''
 
+# class SensorPins(Enum):
+#     POWER = 1
+#     GROUND = 2
 
 class DHT_11(BaseSensor):
     def __init__(self):
         super().__init__()
 
         # self.sensor = Adafruit_DHT.DHT11
-        self.gpioPinNumber = None
-        self.lastTemperature = None
-        self.lastHumidity = None
+        self.PIN__POWER = None
+        self.PIN__GROUND = None
+        self.PIN__SIGNAL = None
+        self.DATA__temperature = None
+        self.DATA__humidity = None
 
+        # TODO:
+        # ad events here
 
-    def validPinNames(self):
-        return ["POWER", "GROUND", "SIGNAL"]
-
-    def validDataElementNames(self):
-        return ["temperature", "humidity"]
-
-    def validEventElementNames(self):
-        return ["TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE", "HUMIDITY_DROPPED_BELOW_50"]
+    # def validPinNames(self):
+    #     return ["POWER", "GROUND", "SIGNAL"]
+    #
+    # def validDataElementNames(self):
+    #     return ["temperature", "humidity"]
+    #
+    # def validEventElementNames(self):
+    #     return ["TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE", "HUMIDITY_DROPPED_BELOW_50"]
 
     def configure(self):
 
-        print (self.name)
 
-        for connection in self.connections:
+        print ("configuring sensor")
+        # Check if pins are valid
+        # TODO: implement these
+        # self.pinMustHaveOneOfTheseTags(sensorPinName = "POWER", tags = [ComputePinTag.POWER_5])
+        # self.pinMustHaveOneOfTheseTags(sensorPinName = "GROUND", tags = [ComputePinTag.GROUND])
+        # self.pinMustHaveOneOfTheseTags(sensorPinName = "SIGNAL", tags = [ComputePinTag.GPIO])
 
-            # TODO: I don't like strings in sensor classes, please move somewhere
-            sense = connection["sense"]
-            compute = connection["compute"]
+        # Set input pin
+        # self.gpioPinNumber = self.getPinNumber("SIGNAL")
+        # self.PIN__GROUND = 2
+        # print ("pin number: " + pinNumber)
 
-            print (sense)
 
         # TODO: make assertions about where all the pins are connected.
         # TODO: for example, for ground, we can check that it is connected to
@@ -61,11 +74,22 @@ class DHT_11(BaseSensor):
         # TODO: No need to return anything. just update member variables
         # TODO: Maybe return a success | failure flag, but won't make sense in multithreaded application
 
-        # self.humidity, self.temperature = Adafruit_DHT.read(self.sensor, self.pinData)
+        # self.DATA__humidity, self.DATA__temperature = Adafruit_DHT.read(self.sensor, self.PIN__SIGNAL)
 
 
-    def write(self):
-        print ("select the requested elements, convert to correct units and create a dict object that can be added to the final json. please think of a better name")
+    def clean(self):
+        # print ("select the requested elements, convert to correct units and create a dict object that can be added to the final json. please think of a better name")
         # TODO: based on the flags that are set, create a dict containing
         # data in correct format
-        return {}
+
+        # TODO: format self.DATA__temperature and self.DATA__humidity here
+        # TODO: body optional
+        # self.DATA__temperature = int()
+
+        # response = {}
+        # if "temperature" in self.dataElements:
+        #     response["temperature"] = self.temperature
+        # if "humidity" in self.dataElements:
+        #     response["humidity"] = self.humidity
+
+        return response

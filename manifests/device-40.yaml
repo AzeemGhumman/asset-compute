@@ -7,11 +7,11 @@ sensors:
   type: DHT_11
   connections:
   - compute: DC_POWER_5V_02
-    sense: POWER
+    sensor: POWER
   - compute: GROUND_39
-    sense: GROUND
+    sensor: GROUND
   - compute: GPIO_23
-    sense: SIGNAL
+    sensor: SIGNAL
   data:
   - temperature
   events:
@@ -24,11 +24,11 @@ sensors:
   type: DHT_11
   connections:
   - compute: DC_POWER_5V_04
-    sense: POWER
+    sensor: POWER
   - compute: GROUND_25
-    sense: GROUND
+    sensor: GROUND
   - compute: GPIO_14
-    sense: SIGNAL
+    sensor: SIGNAL
   data:
   - temperature
   - humidity
@@ -37,3 +37,6 @@ sensors:
   period:
   - unit: seconds
     value: 20
+output:
+  format: YAML
+  endpoint: http://www.google.com
