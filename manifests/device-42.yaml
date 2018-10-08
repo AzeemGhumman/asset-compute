@@ -1,0 +1,42 @@
+---
+device-name: device-40
+hardware-type: Pi3b
+queue-size: 100
+sensors:
+- name: Internal-Temperature
+  type: DHT_11
+  connections:
+  - compute: DC_POWER_5V_02
+    sensor: POWER
+  - compute: GROUND_39
+    sensor: GROUND
+  - compute: GPIO_23
+    sensor: SIGNAL
+  data:
+  - temperature
+  events:
+  - HUMIDITY_DROPPED_BELOW_50
+  - TEMPERATURE_EXCEEDED_ROOM_TEMPERATURE
+  period:
+  - unit: seconds
+    value: 10
+- name: External-Temperature
+  type: DHT_11
+  connections:
+  - compute: DC_POWER_5V_04
+    sensor: POWER
+  - compute: GROUND_25
+    sensor: GROUND
+  - compute: GPIO_14
+    sensor: SIGNAL
+  data:
+  - temperature
+  - humidity
+  events:
+  - HUMIDITY_DROPPED_BELOW_50
+  period:
+  - unit: seconds
+    value: 20
+output:
+  format: YAML
+  endpoint: http://www.google.com/8085

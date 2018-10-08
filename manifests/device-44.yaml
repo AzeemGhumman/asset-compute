@@ -1,0 +1,39 @@
+---
+device-name: device-40
+hardware-type: Pi3b
+queue-size: 100
+sensors:
+- name: Inside the house
+  type: DHT_11
+  connections:
+  - compute: DC_POWER_5V_02
+    sensor: POWER
+  - compute: GROUND_39
+    sensor: GROUND
+  - compute: GPIO_23
+    sensor: SIGNAL
+  signals:
+  - temperature
+  - humidity
+  events:
+  - humidity_dropped_below_30
+  - humidity_exceeded_room_temperature
+  - humidity_triggers
+  - temperature_triggers
+  params:
+    model: 11
+    temperature_unit: C
+    humidity_unit: percentage
+    temperature_triggers:
+    - 50
+    - 80
+    humidity_triggers:
+    - 20
+    - 90
+  period:
+    unit: seconds
+    value: 10
+
+output:
+  format: YAML
+  endpoint: http://www.google.com

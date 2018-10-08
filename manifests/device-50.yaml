@@ -1,0 +1,37 @@
+---
+device-name: device-40
+hardware-type: Pi3b
+queue-size: 100
+sensors:
+- type: DHT_11
+  name: InsideHouse
+  info: Inside the house
+  connections:
+  - compute: DC_POWER_5V_02
+    sensor: POWER
+  - compute: GROUND_39
+    sensor: GROUND
+  - compute: GPIO_23
+    sensor: SIGNAL
+  signals:
+  - temperature
+  - humidity
+  params:
+    model: 11
+    temperature_unit: C
+    humidity_unit: percentage
+  period:
+    unit: seconds
+    value: 10
+
+events:
+- type: AboveThreshold
+  name: TemperatureAboveThreshold
+  info: "Exceeded sensor temperature limit"
+  signal_name: temperature
+  signal_value: $_InsideHouse.temperature.value
+  threshold: 80
+
+output:
+  format: YAML
+  endpoint: http://www.google.com

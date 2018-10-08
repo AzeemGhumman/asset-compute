@@ -4,7 +4,7 @@ hardware-type: Pi3b
 queue-size: 100
 sensors:
 - name: Internal-Temperature
-  type: DHT_11
+  type: DHT
   connections:
   - compute: DC_POWER_5V_02
     sensor: POWER
@@ -12,9 +12,22 @@ sensors:
     sensor: GROUND
   - compute: GPIO_23
     sensor: SIGNAL
-  data:
+  signals:
   - temperature
   - humidity
+  events:
+  - HUMIDITY_VALUE_TRIGGER
+  - TEMPERATURE_VALUE_TRIGGER
+  - TEMPERATURE_OVER_ROOM_TEMPERATURE
+  params:
+  - model: 11
+  - temperature_unit: C
+    humidity_unit: percentage
+    humidity_triggers:
+    - 20
+    - 80
+    temperature_trigger:
+    - 38
   period:
   - unit: seconds
     value: 10

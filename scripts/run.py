@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-
 import yaml
 import os
 import pdb
 import sys
+from time import sleep
 
 # Load compute
 sys.path.append('../compute/')
@@ -14,10 +14,14 @@ import BaseCompute
 sys.path.append('../sensors/')
 import BaseSensor
 
+# Load events
+sys.path.append('../events/')
+import BaseEvent
+
 # Load common
 sys.path.append('../scripts/helper/')
 from common import SensorPin, ComputePin, PinConnection
-from common import fail
+from common import fail, loadConfiguration, importClassDynamically
 
 '''
 Read yaml file
@@ -40,50 +44,14 @@ For each unit of time passed:
         Add json pack to queue
 '''
 
-def loadConfiguration(configFilePath, params):
-    print ("Loading config file: " + configFilePath)
-    # Extract config data from config file
-    if not os.path.exists(configFilePath):
-        fail("Error: config file does not exist")
+manifest_file_path = "../manifests/device-50.yaml"
 
-    # Read file and parse as yaml
-    config = yaml.load(open(configFilePath))
-
-    # Check for elements in the config file
-    for param in params:
-        if param not in config:
-            fail("Error: " + param + " missing in config file")
-
-    configurations = []
-    for param in params:
-        configurations.append(config[param])
-    return configurations
-
-
-def importClassDynamically(className):
-    try:
-        components = className.split('.')
-        mod = __import__(components[0])
-        for comp in components[1:]:
-            mod = getattr(mod, comp)
-        return getattr(mod, className)()
-    except Exception as e:
-        fail ("Error: Exception occurred while trying to load class: " + className + \
-              "\nException: " + str(e))
-
-manifestFilePath = "../manifests/device-40.yaml"
-
-paramDeviceName, paramHardwareType, paramQueueSize, paramSensors = \
-    loadConfiguration(configFilePath = manifestFilePath, \
-    params = ["device-name", "hardware-type", 'queue-size', "sensors"])
-
-# print ("hardware-type: " + paramHardwareType)
+param_device_name, param_hardware_type, param_queue_size, param_sensors, param_events, param_output = \
+    loadConfiguration(config_file_path = manifest_file_path, \
+    params = ["device-name", "hardware-type", 'queue-size', "sensors", "events", "output"])
 
 # Dynamically load the compute class
-computeClass = importClassDynamically(paramHardwareType)
-
-# Load the pin map for the selected compute
-# computeBoardPins = computeClass.getComputePins()
+compute_class = importClassDynamically(param_hardware_type)
 
 
 '''
@@ -101,55 +69,92 @@ Every N seconds:
 '''
 
 # Strings used in yaml file
-strSensorName = "name"
-strSensorType = "type"
-strSensorDataElements = "data"
-strSensorEventElements = "events"
-strSensorConnections = "connections"
-strSensorConnectionCompute = "compute"
-strSensorConnectionSensor = "sensor"
+str_sensor_name = "name"
+str_sensor_type = "type"
+str_sensor_signal_elements = "signals"
+str_sensor_connections = "connections"
+str_sensor_connection_compute = "compute"
+str_sensor_connection_sensor = "sensor"
+str_events = "events"
+str_event_type = "type"
+str_sensor_parameters = "params"
+
+
+# TODO: create method read manifest and load an object that represents the manifest
+# update validate code so that it loads, configures and reads once data from all sensors
 
 # Store sensor objects in a list
-sensors = []
+sensors = {}
 
-for sensor in paramSensors:
+for sensor in param_sensors:
+
+    # Check if a sensor attribute is missing
+    # TODO: Check if attributes bessides connections are missing
+    if str_sensor_connections not in sensor:
+        fail ("Error: Connection is missing for sensor: " + sensor[str_sensor_name])
+
+    # Fail if sensor name is repeated
+    if sensor[str_sensor_name] in sensors:
+        fail("Error: Sensor names must be unique. Duplicate sensor: " + sensor[str_sensor_name])
 
     # Update conncetions: get pinMap from pin name for each compute pin
     connections = []
-    for connection in sensor[strSensorConnections]:
-        sensorPin = SensorPin(name = connection[strSensorConnectionSensor])
-        computePinName = connection[strSensorConnectionCompute]
-        # computePin = getComputePin(computeClass, computePinName)
-        computePin = computeClass.getPin(computePinName)
-        if computePin is None:
-            fail ("Pin: " + str(computePin) + " not found in selected compute")
-        connections.append(PinConnection(sensorPin, computePin))
-        # connections.append({strSensorConnectionCompute : computePinMap[computePin], \
-        #                     strSensorConnectionSensor : sensorPin})
+    for connection in sensor[str_sensor_connections]:
+        sensor_pin = SensorPin(name = connection[str_sensor_connection_sensor])
+        compute_pin_name = connection[str_sensor_connection_compute]
+        compute_pin = compute_class.getPin(compute_pin_name)
+        if compute_pin is None:
+            fail ("Pin: " + str(compute_pin) + " not found in selected compute")
+        connections.append(PinConnection(sensor_pin, compute_pin))
 
-    sensorObject = importClassDynamically(sensor[strSensorType])
+    sensorObject = importClassDynamically(sensor[str_sensor_type])
 
-    sensorObject.setSensorConfigurations(name = sensor[strSensorName], \
-                                        dataElements = sensor[strSensorDataElements], \
-                                        eventElements = sensor[strSensorEventElements], \
-                                        connections = connections)
+    sensorObject.setSensorConfigurations(name = sensor[str_sensor_name], \
+                                        signal_elements = sensor[str_sensor_signal_elements], \
+                                        connections = connections, \
+                                        params = sensor[str_sensor_parameters])
 
-    sensorObject.configure()
+    sensors[sensor[str_sensor_name]] = sensorObject
 
-    sensors.append(sensorObject)
+# Configure events
+events = []
+for event in param_events:
 
-    # TODO: remove break
-    break
+    event_type = event[str_event_type]
+    eventObject = importClassDynamically(event_type)
+    eventObject.configureEvent(type = event_type, event_dict = event, sensors_data = sensors)
+    events.append(eventObject)
+
+# Check for duplicate events
+event_set = set()
+for event in events:
+    if event.PARAM__name in event_set:
+        fail ("Error: Event names must be unique. Duplicate event: " + event.PARAM__name)
+    event_set.add(event.PARAM__name)
 
 print ("all sensors have been configured")
 # All sensors have been configured
+
+counter = 0
 while True:
     output = {}
-    for sensor in sensors:
+    for sensor_name, sensor in sensors.items():
         sensor.read()
-        output[sensor.name] = sensor.write()
+        print ("reading sensor data...")
+        output[sensor.name] = sensor.writeData(events_data = events)
     print (output)
+    sleep(1)
+    counter += 1
+    # TODO: add timestamp and device id and create yaml and send to end point
 
+
+'''
+every time unit:
+    create list of sensors that need to be read this time
+    create a separate thread for each sensor or a thread pool
+    wait until all threads are finished
+    create a json object from the output of all the responses
+'''
 
 
 # pdb.set_trace()

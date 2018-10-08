@@ -22,14 +22,6 @@ Assumption:
     when configuring the hardware on startup.
     e.g, a sensors can check if the GND, power and signal pin is connected to valid
     pins on the actual board.
-
-    class PI_3:
-        pin number: 23
-        name: GPIO_32 (shows up in manifest)
-        tags: [GPIO, reserved]
-
-        a map!
-        pins["manifestName"] = (pinNumber = X, tags = ["power", "reserved"])
 '''
 
 # TODO: at some point, this file could be represented as a YAML and dynamically loaded into the
@@ -42,53 +34,53 @@ class Pi3b(BaseCompute):
         super().__init__()
 
         # Pin Layout
-        self.pinLayout = [list(range(1, 40, 2)), list(range(2, 41, 2))]
+        self.pin_layout = [list(range(1, 40, 2)), list(range(2, 41, 2))]
 
         # Pin Map
         self.pins = []
-        self.pins.append(ComputePin(name = "DC_POWER_3_3V_01",  pinNumber = 1,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_3_3]))
-        self.pins.append(ComputePin(name = "DC_POWER_5V_02",    pinNumber = 2,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_5]))
-        self.pins.append(ComputePin(name = "GPIO_02",           pinNumber = 3,  tags = [ComputePinTag.GPIO],         gpioPin = 2))
-        self.pins.append(ComputePin(name = "DC_POWER_5V_04",    pinNumber = 4,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_5]))
-        self.pins.append(ComputePin(name = "GPIO_03",           pinNumber = 5,  tags = [ComputePinTag.GPIO],         gpioPin = 3))
-        self.pins.append(ComputePin(name = "GROUND_06",         pinNumber = 6,  tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_04",           pinNumber = 7,  tags = [ComputePinTag.GPIO],         gpioPin = 4))
-        self.pins.append(ComputePin(name = "GPIO_14",           pinNumber = 8,  tags = [ComputePinTag.GPIO],         gpioPin = 14))
-        self.pins.append(ComputePin(name = "GROUND_09",         pinNumber = 9,  tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_15",           pinNumber = 10, tags = [ComputePinTag.GPIO],         gpioPin = 15))
-        self.pins.append(ComputePin(name = "GPIO_17",           pinNumber = 11, tags = [ComputePinTag.GPIO],         gpioPin = 17))
-        self.pins.append(ComputePin(name = "GPIO_18",           pinNumber = 12, tags = [ComputePinTag.GPIO],         gpioPin = 18))
-        self.pins.append(ComputePin(name = "GPIO_27",           pinNumber = 13, tags = [ComputePinTag.GPIO],         gpioPin = 27))
-        self.pins.append(ComputePin(name = "GROUND_14",         pinNumber = 14, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_22",           pinNumber = 15, tags = [ComputePinTag.GPIO],         gpioPin = 22))
-        self.pins.append(ComputePin(name = "GPIO_23",           pinNumber = 16, tags = [ComputePinTag.GPIO],         gpioPin = 23))
-        self.pins.append(ComputePin(name = "DC_POWER_3_3V_17",  pinNumber = 17, tags = [ComputePinTag.POWER, ComputePinTag.POWER_3_3]))
-        self.pins.append(ComputePin(name = "GPIO_24",           pinNumber = 18, tags = [ComputePinTag.GPIO],         gpioPin = 24))
-        self.pins.append(ComputePin(name = "GPIO_10",           pinNumber = 19, tags = [ComputePinTag.GPIO],         gpioPin = 10))
-        self.pins.append(ComputePin(name = "GROUND_20",         pinNumber = 20, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_09",           pinNumber = 21, tags = [ComputePinTag.GPIO],         gpioPin = 9))
-        self.pins.append(ComputePin(name = "GPIO_25",           pinNumber = 22, tags = [ComputePinTag.GPIO],         gpioPin = 25))
-        self.pins.append(ComputePin(name = "GPIO_11",           pinNumber = 23, tags = [ComputePinTag.GPIO],         gpioPin = 11))
-        self.pins.append(ComputePin(name = "GPIO_08",           pinNumber = 24, tags = [ComputePinTag.GPIO],         gpioPin = 8))
-        self.pins.append(ComputePin(name = "GROUND_25",         pinNumber = 25, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_07",           pinNumber = 26, tags = [ComputePinTag.GPIO],         gpioPin = 7))
-        self.pins.append(ComputePin(name = "ID_SD",             pinNumber = 27, tags = [ComputePinTag.RESERVED]))
-        self.pins.append(ComputePin(name = "ID_SC",             pinNumber = 28, tags = [ComputePinTag.RESERVED]))
-        self.pins.append(ComputePin(name = "GPIO_05",           pinNumber = 29, tags = [ComputePinTag.GPIO],         gpioPin = 5))
-        self.pins.append(ComputePin(name = "GROUND_30",         pinNumber = 30, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_06",           pinNumber = 31, tags = [ComputePinTag.GPIO],         gpioPin = 6))
-        self.pins.append(ComputePin(name = "GPIO_12",           pinNumber = 32, tags = [ComputePinTag.GPIO],         gpioPin = 12))
-        self.pins.append(ComputePin(name = "GPIO_13",           pinNumber = 33, tags = [ComputePinTag.GPIO],         gpioPin = 13))
-        self.pins.append(ComputePin(name = "GROUND_34",         pinNumber = 34, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_19",           pinNumber = 35, tags = [ComputePinTag.GPIO],         gpioPin = 19))
-        self.pins.append(ComputePin(name = "GPIO_16",           pinNumber = 36, tags = [ComputePinTag.GPIO],         gpioPin = 16))
-        self.pins.append(ComputePin(name = "GPIO_26",           pinNumber = 37, tags = [ComputePinTag.GPIO],         gpioPin = 26))
-        self.pins.append(ComputePin(name = "GPIO_20",           pinNumber = 38, tags = [ComputePinTag.GPIO],         gpioPin = 20))
-        self.pins.append(ComputePin(name = "GROUND_39",         pinNumber = 39, tags = [ComputePinTag.GROUND]))
-        self.pins.append(ComputePin(name = "GPIO_21",           pinNumber = 40, tags = [ComputePinTag.GPIO],         gpioPin = 21))
+        self.pins.append(ComputePin(name = "DC_POWER_3_3V_01",  pin_number = 1,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_3_3]))
+        self.pins.append(ComputePin(name = "DC_POWER_5V_02",    pin_number = 2,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_5]))
+        self.pins.append(ComputePin(name = "GPIO_02",           pin_number = 3,  tags = [ComputePinTag.GPIO],         gpio_pin = 2))
+        self.pins.append(ComputePin(name = "DC_POWER_5V_04",    pin_number = 4,  tags = [ComputePinTag.POWER, ComputePinTag.POWER_5]))
+        self.pins.append(ComputePin(name = "GPIO_03",           pin_number = 5,  tags = [ComputePinTag.GPIO],         gpio_pin = 3))
+        self.pins.append(ComputePin(name = "GROUND_06",         pin_number = 6,  tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_04",           pin_number = 7,  tags = [ComputePinTag.GPIO],         gpio_pin = 4))
+        self.pins.append(ComputePin(name = "GPIO_14",           pin_number = 8,  tags = [ComputePinTag.GPIO],         gpio_pin = 14))
+        self.pins.append(ComputePin(name = "GROUND_09",         pin_number = 9,  tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_15",           pin_number = 10, tags = [ComputePinTag.GPIO],         gpio_pin = 15))
+        self.pins.append(ComputePin(name = "GPIO_17",           pin_number = 11, tags = [ComputePinTag.GPIO],         gpio_pin = 17))
+        self.pins.append(ComputePin(name = "GPIO_18",           pin_number = 12, tags = [ComputePinTag.GPIO],         gpio_pin = 18))
+        self.pins.append(ComputePin(name = "GPIO_27",           pin_number = 13, tags = [ComputePinTag.GPIO],         gpio_pin = 27))
+        self.pins.append(ComputePin(name = "GROUND_14",         pin_number = 14, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_22",           pin_number = 15, tags = [ComputePinTag.GPIO],         gpio_pin = 22))
+        self.pins.append(ComputePin(name = "GPIO_23",           pin_number = 16, tags = [ComputePinTag.GPIO],         gpio_pin = 23))
+        self.pins.append(ComputePin(name = "DC_POWER_3_3V_17",  pin_number = 17, tags = [ComputePinTag.POWER, ComputePinTag.POWER_3_3]))
+        self.pins.append(ComputePin(name = "GPIO_24",           pin_number = 18, tags = [ComputePinTag.GPIO],         gpio_pin = 24))
+        self.pins.append(ComputePin(name = "GPIO_10",           pin_number = 19, tags = [ComputePinTag.GPIO],         gpio_pin = 10))
+        self.pins.append(ComputePin(name = "GROUND_20",         pin_number = 20, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_09",           pin_number = 21, tags = [ComputePinTag.GPIO],         gpio_pin = 9))
+        self.pins.append(ComputePin(name = "GPIO_25",           pin_number = 22, tags = [ComputePinTag.GPIO],         gpio_pin = 25))
+        self.pins.append(ComputePin(name = "GPIO_11",           pin_number = 23, tags = [ComputePinTag.GPIO],         gpio_pin = 11))
+        self.pins.append(ComputePin(name = "GPIO_08",           pin_number = 24, tags = [ComputePinTag.GPIO],         gpio_pin = 8))
+        self.pins.append(ComputePin(name = "GROUND_25",         pin_number = 25, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_07",           pin_number = 26, tags = [ComputePinTag.GPIO],         gpio_pin = 7))
+        self.pins.append(ComputePin(name = "ID_SD",             pin_number = 27, tags = [ComputePinTag.RESERVED]))
+        self.pins.append(ComputePin(name = "ID_SC",             pin_number = 28, tags = [ComputePinTag.RESERVED]))
+        self.pins.append(ComputePin(name = "GPIO_05",           pin_number = 29, tags = [ComputePinTag.GPIO],         gpio_pin = 5))
+        self.pins.append(ComputePin(name = "GROUND_30",         pin_number = 30, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_06",           pin_number = 31, tags = [ComputePinTag.GPIO],         gpio_pin = 6))
+        self.pins.append(ComputePin(name = "GPIO_12",           pin_number = 32, tags = [ComputePinTag.GPIO],         gpio_pin = 12))
+        self.pins.append(ComputePin(name = "GPIO_13",           pin_number = 33, tags = [ComputePinTag.GPIO],         gpio_pin = 13))
+        self.pins.append(ComputePin(name = "GROUND_34",         pin_number = 34, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_19",           pin_number = 35, tags = [ComputePinTag.GPIO],         gpio_pin = 19))
+        self.pins.append(ComputePin(name = "GPIO_16",           pin_number = 36, tags = [ComputePinTag.GPIO],         gpio_pin = 16))
+        self.pins.append(ComputePin(name = "GPIO_26",           pin_number = 37, tags = [ComputePinTag.GPIO],         gpio_pin = 26))
+        self.pins.append(ComputePin(name = "GPIO_20",           pin_number = 38, tags = [ComputePinTag.GPIO],         gpio_pin = 20))
+        self.pins.append(ComputePin(name = "GROUND_39",         pin_number = 39, tags = [ComputePinTag.GROUND]))
+        self.pins.append(ComputePin(name = "GPIO_21",           pin_number = 40, tags = [ComputePinTag.GPIO],         gpio_pin = 21))
 
     def getPins(self):
         return self.pins
 
     def getLayout(self):
-        return self.pinLayout
+        return self.pin_layout
