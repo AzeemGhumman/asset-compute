@@ -1,5 +1,5 @@
 ---
-device-name: device-40
+device-name: device-42
 hardware-type: Pi3b
 queue-size: 100
 sensors:

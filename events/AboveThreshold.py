@@ -23,11 +23,8 @@ class AboveThreshold(BaseEvent):
         if self.PARAM__threshold is None:
             failEventConfiguration(self, "threshold is missing")
 
-        # Extract sensors and add to list of attached sensors
-        self.registerDynamicObject(self.PARAM__signal_value)
-
-        # Request signal_value once to make sure the dynamic object points to a valid location
-        self.getDynamicObject(self.PARAM__signal_value)
+        # Register dynamic resources
+        self.registerDynamicResource(self.PARAM__signal_value)
 
     def isTriggered(self):
 

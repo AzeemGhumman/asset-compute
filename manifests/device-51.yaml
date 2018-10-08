@@ -1,10 +1,11 @@
 ---
-device-name: device-44
+device-name: device-51
 hardware-type: Pi3b
 queue-size: 100
 sensors:
-- name: Inside the house
-  type: DHT_11
+- type: DHT
+  name: InsideHouse
+  info: Inside the house
   connections:
   - compute: DC_POWER_5V_02
     sensor: POWER
@@ -15,24 +16,21 @@ sensors:
   signals:
   - temperature
   - humidity
-  events:
-  - humidity_dropped_below_30
-  - humidity_exceeded_room_temperature
-  - humidity_triggers
-  - temperature_triggers
   params:
     model: 11
     temperature_unit: C
     humidity_unit: percentage
-    temperature_triggers:
-    - 50
-    - 80
-    humidity_triggers:
-    - 20
-    - 90
   period:
     unit: seconds
     value: 10
+
+events:
+- type: AboveThreshold
+  name: TemperatureAboveThreshold
+  info: "Exceeded sensor temperature limit"
+  signal_name: temperature
+  signal_value: $_InsideHouse.temperature.value
+  threshold: 80
 
 output:
   format: YAML

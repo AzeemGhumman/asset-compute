@@ -51,12 +51,15 @@ class BaseEvent(ABC):
         except:
             return False
 
-    def registerDynamicObject(self, dynamic_object):
+    def registerDynamicResource(self, dynamic_object):
         try:
             object_name = dynamic_object[len("$_"):]
             first_dot = object_name.find(".")
             sensor_name = object_name[:first_dot]
             self.attached_sensors.add(sensor_name)
+
+            # Request resource once to make sure the dynamic object points to a valid location
+            self.getDynamicObject(dynamic_object)
         except Exception as e:
             failEventConfiguration(self, "Error parsing dynamic object: " + str(dynamic_object) + "\n" + str(e))
 
