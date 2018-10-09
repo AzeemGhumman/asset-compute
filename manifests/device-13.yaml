@@ -1,9 +1,10 @@
 ---
-device-name: device-50
+device-name: device-13
 hardware-type: Pi3b
 queue-size: 100
+
 sensors:
-- type: DHT_11
+- type: DHT
   name: InsideHouse
   info: Inside the house
   connections:
@@ -20,7 +21,10 @@ sensors:
     model: 11
     temperature_unit: C
     humidity_unit: percentage
-  period:
+  update-period:
+    unit: seconds
+    value: 5
+  report-period:
     unit: seconds
     value: 10
 
@@ -33,5 +37,5 @@ events:
   threshold: 80
 
 output:
-  format: YAML
-  endpoint: http://www.google.com
+  format: JSON
+  endpoint: http://10.20.30.40:8080/log

@@ -6,6 +6,15 @@ import pdb
 import sys
 from time import sleep
 
+'''
+TODO: We might want to run the read() method of each sensor
+ at a different rate than the specified rate. This will give
+ us more granular data that might be used to detect events that require
+ granular data. We can make a distinction between read() that updates the
+ output and read that updates the internal state of the sensor objects
+ we can define 2 different rates in the manifest for each sensor
+'''
+
 # Load compute
 sys.path.append('../compute/')
 import BaseCompute
@@ -44,7 +53,10 @@ For each unit of time passed:
         Add json pack to queue
 '''
 
-manifest_file_path = "../manifests/device-50.yaml"
+if len(sys.argv) < 2:
+    fail ("Error: Manifest file path required")
+# manifest_file_path = "../manifests/device-13.yaml"
+manifest_file_path = sys.argv[1]
 
 param_device_name, param_hardware_type, param_queue_size, param_sensors, param_events, param_output = \
     loadConfiguration(config_file_path = manifest_file_path, \
@@ -139,7 +151,7 @@ counter = 0
 while True:
     output = {}
     for sensor_name, sensor in sensors.items():
-        sensor.read()
+        sensor.update()
         print ("reading sensor data...")
         output[sensor.name] = sensor.writeData(events_data = events)
     print (output)

@@ -1,0 +1,29 @@
+---
+device-name: device-11
+hardware-type: Pi3b
+queue-size: 100
+sensors:
+- type: DHT_11
+  name: Internal-Temperature
+  info: Temperature Sensor Inside the House
+  connections:
+  - compute: DC_POWER_5V_02
+    sensor: POWER
+  - compute: GROUND_39
+    sensor: GROUND
+  - compute: GPIO_23
+    sensor: SIGNAL
+  signals:
+  - temperature
+  - humidity
+  params: []
+  update-period:
+    value: 10
+    unit: seconds
+  report-period:
+    value: 10
+    unit: seconds
+events: []
+output:
+  format: JSON
+  endpoint: http://10.20.30.40:8080/log

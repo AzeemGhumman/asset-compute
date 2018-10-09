@@ -116,7 +116,7 @@ class BaseSensor(ABC):
 
     def writeData(self, events_data):
 
-        self.beforeWrite()
+        self.report()
 
         signals = {}
         # Add all the signals
@@ -144,7 +144,7 @@ class BaseSensor(ABC):
         if len(events_triggered) > 0:
             response['events'] = events_triggered
 
-        self.afterWrite()
+        self.afterReport()
         return response
 
     @abstractmethod
@@ -164,13 +164,17 @@ class BaseSensor(ABC):
         pass
 
     @abstractmethod
-    def read(self):
+    def update(self):
         pass
 
     @abstractmethod
-    def beforeWrite(self):
+    def report(self):
         pass
 
     @abstractmethod
-    def afterWrite(self):
+    def report(self):
+        pass
+
+    @abstractmethod
+    def afterReport(self):
         pass

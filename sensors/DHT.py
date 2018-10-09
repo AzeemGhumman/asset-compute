@@ -9,7 +9,7 @@ import sys
 sys.path.append('../scripts/helper/')
 from common import fail, failSensorConfiguration, ComputePinTag
 
-class DHT_11(BaseSensor):
+class DHT(BaseSensor):
     def __init__(self):
         super().__init__()
         self.current_humidity = None
@@ -42,13 +42,13 @@ class DHT_11(BaseSensor):
             failSensorConfiguration (self, "Invalid Model number")
         '''
 
-    def read(self):
+    def update(self):
         # self.current_humidity, self.current_temperature = Adafruit_DHT.read(self.sensor, self.PIN__SIGNAL.gpioPin)
         pass
 
-    def beforeWrite(self):
+    def report(self):
         self.temperature = {"value" : self.current_humidity}
         self.humidity = {"value" : self.current_temperature}
 
-    def afterWrite(self):
+    def afterReport(self):
         pass

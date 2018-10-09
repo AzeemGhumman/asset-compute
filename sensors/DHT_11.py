@@ -34,13 +34,13 @@ class DHT_11(BaseSensor):
         # TODO: check model, complain if not set when using the same DHT class for both models 11 and 22
         # self.sensor = Adafruit_DHT.DHT11
 
-    def read(self):
+    def update(self):
         # self.current_humidity, self.current_temperature = Adafruit_DHT.read(self.sensor, self.PIN__SIGNAL.gpioPin)
         pass
 
-    def beforeWrite(self):
+    def report(self):
         self.temperature = {"value" : self.current_humidity}
         self.humidity = {"value" : self.current_temperature}
 
-    def afterWrite(self):
+    def afterReport(self):
         pass
