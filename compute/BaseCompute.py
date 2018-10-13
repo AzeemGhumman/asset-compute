@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class BaseCompute(ABC):
 
     def __init__(self):
